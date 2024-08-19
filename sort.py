@@ -28,15 +28,13 @@ np.random.shuffle(nums_merge)
 def bubble(bars, nums):
     for i in range(AMOUNT):
         for j in range(0, AMOUNT-i-1):
-            # for bar, height in zip(bars, nums):
-            #     bar.set_height(height)
-            #     bar.set_color('blue')
-            # bars[j].set_color('red')
-            # plt.pause(PAUSE)
+            for bar, height in zip(bars, nums):
+                bar.set_height(height)
+                bar.set_color('blue')
+            bars[j].set_color('red')
             if nums[j] > nums[j+1]:
                 nums[j], nums[j+1] = nums[j+1], nums[j]
             yield nums
-    # bars[j].set_color('blue')
 
 # Selection sort
 # Selects minimum item from unsorted part and puts the smallest element in first unsorted spot, which is then part of sorted, not stable, in-place
@@ -45,20 +43,16 @@ def bubble(bars, nums):
 def selection(bars, nums):
     for i in range(AMOUNT):
         min_val = i
-        # for bar, height in zip(bars, nums):
-        #     bar.set_height(height)
-        #     bar.set_color('blue')
-        # bars[i].set_color('red')
+        for bar, height in zip(bars, nums):
+            bar.set_height(height)
+            bar.set_color('blue')
+        bars[i].set_color('red')
         for j in range(i+1, AMOUNT):
-            # bars[j].set_color('black')
-            # plt.pause(PAUSE) 
+            bars[j].set_color('gray')
             if nums[j] < nums[min_val]:
                 min_val = j
-            # bars[j].set_color('blue')
         nums[i], nums[min_val] = nums[min_val], nums[i]
         yield nums
-    #     plt.pause(PAUSE)
-    # bars[j].set_color('blue')
 
 def update_bubble(frame):
     for bar, height in zip(bars_bubble, frame):
@@ -96,8 +90,8 @@ bubble_gen = bubble(bars_bubble, nums_bubble)
 
 selection_gen = selection(bars_selection, nums_selection)
 
-ani_bubble = FuncAnimation(fig, update_bubble, frames=bubble(bars_bubble, nums_bubble), repeat=False, interval=PAUSE, blit=True)
-ani_selection = FuncAnimation(fig, update_selection, frames=selection(bars_selection, nums_selection), repeat=False, interval=PAUSE, blit=True)
+ani_bubble = FuncAnimation(fig, update_bubble, frames=bubble(bars_bubble, nums_bubble), repeat=False, interval=PAUSE, blit=True, cache_frame_data=False)
+ani_selection = FuncAnimation(fig, update_selection, frames=selection(bars_selection, nums_selection), repeat=False, interval=PAUSE, blit=True, cache_frame_data=False)
 
 plt.show()
 
