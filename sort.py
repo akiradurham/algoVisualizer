@@ -147,6 +147,48 @@ def quick(bars, nums, low, high):
         yield nums
         yield from quick(bars, nums, low, p)
         yield from quick(bars, nums, p + 1, high)
+        
+# Merge sort
+# Recursively break list into halves until size = 1, then combine and sort on combines, stable, not in-place
+# Time complexity : best O(nlogn), avg O(nlogn), worst O(nlogn)
+# Space complexity : O(n) bc temp array when merging
+def merge(bars, nums, left, right):
+    if left >= right:
+        return
+
+    mid = (left + right) // 2
+    yield from merge(bars, nums, left, mid)
+    yield from merge(bars, nums, mid + 1, right)
+    yield from merge_combine(bars, nums, left, mid, right)
+
+def merge_combine(bars, nums, left, mid, right):
+    merged = []
+    i, j = left, mid + 1
+
+    while i <= mid and j <= right:
+        if nums[i] < nums[j]:
+            merged.append(nums[i])
+            i += 1
+        else:
+            merged.append(nums[j])
+            j += 1
+
+    while i <= mid:
+        merged.append(nums[i])
+        i += 1
+
+    while j <= right:
+        merged.append(nums[j])
+        j += 1
+
+    for k in range(len(merged)):
+        nums[left + k] = merged[k]
+        for bar, height in zip(bars, nums):
+            bar.set_height(height)
+            bar.set_color('blue')
+        for idx in range(left, left + k + 1):
+            bars[idx].set_color('red')
+        yield nums
 
 # Update functions to help with the animation
 def update_bubble(frame):
@@ -174,33 +216,43 @@ def update_quick(frame):
         bar.set_height(height)
     return bars_quick
 
+def update_merge(frame):
+    for bar, height in zip(bars_merge, frame):
+        bar.set_height(height)
+    return bars_merge
+
 # setting up the graphs and titles
 fig, ax = plt.subplots(2, 3, figsize=(12, 8))
 
 ax[0,0].set_title('Bubble Sort')
 ax[0,0].set_xlabel('Index')
 ax[0,0].set_ylabel('Value')
-bars_bubble = ax[0,0].bar(np.arange(AMOUNT), nums_bubble, color='blue', width = 0.6)
+bars_bubble = ax[0, 0].bar(np.arange(AMOUNT), nums_bubble, color='blue', width = 0.6)
 
 ax[0,1].set_title('Selection Sort')
 ax[0,1].set_xlabel('Index')
 ax[0,1].set_ylabel('Value')
-bars_selection = ax[0,1].bar(np.arange(AMOUNT), nums_selection, color='blue', width = 0.6)
+bars_selection = ax[0, 1].bar(np.arange(AMOUNT), nums_selection, color='blue', width = 0.6)
 
 ax[0,2].set_title('Insertion Sort')
 ax[0,2].set_xlabel('Index')
 ax[0,2].set_ylabel('Value')
-bars_insertion = ax[0,2].bar(np.arange(AMOUNT), nums_insertion, color='blue', width = 0.6)
+bars_insertion = ax[0, 2].bar(np.arange(AMOUNT), nums_insertion, color='blue', width = 0.6)
 
 ax[1, 0].set_title('Heap Sort')
 ax[1, 0].set_xlabel('Index')
 ax[1, 0].set_ylabel('Value')
 bars_heap = ax[1, 0].bar(np.arange(AMOUNT), nums_heap, color='blue', width=0.6)
 
-ax[1, 1].set_title('Hoare\'s Quick Sort')
+ax[1, 1].set_title('Quick Sort')
 ax[1, 1].set_xlabel('Index')
 ax[1, 1].set_ylabel('Value')
 bars_quick = ax[1, 1].bar(np.arange(AMOUNT), nums_quick, color='blue', width=0.6)
+
+ax[1, 2].set_title('Merge Sort')
+ax[1, 2].set_xlabel('Index')
+ax[1, 2].set_ylabel('Value')
+bars_merge = ax[1, 2].bar(np.arange(AMOUNT), nums_merge, color='blue', width=0.6)
 
 # calculating the amount of frames each animation needs
 bubble_gen = bubble(bars_bubble, nums_bubble)
@@ -208,6 +260,7 @@ selection_gen = selection(bars_selection, nums_selection)
 insertion_gen = insertion(bars_insertion, nums_insertion)
 heap_gen = heap(bars_heap, nums_heap)
 quick_gen = quick(bars_quick, nums_quick, 0, len(nums_quick) - 1)
+merge_gen = merge(bars_merge, nums_merge, 0, len(nums_merge) - 1)
 
 # running the animations with given frames and information
 ani_bubble = FuncAnimation(fig, update_bubble, frames=bubble(bars_bubble, nums_bubble), repeat=False, interval=PAUSE, blit=True, cache_frame_data=False)
@@ -215,21 +268,7 @@ ani_selection = FuncAnimation(fig, update_selection, frames=selection(bars_selec
 ani_insertion = FuncAnimation(fig, update_insertion, frames=insertion(bars_insertion, nums_insertion), repeat=False, interval=PAUSE, blit=True, cache_frame_data=False)
 ani_heap = FuncAnimation(fig, update_heap, frames=heap(bars_heap, nums_heap), repeat=False, interval=PAUSE, blit=True, cache_frame_data=False)
 ani_quick = FuncAnimation(fig, update_quick, frames=quick(bars_quick, nums_quick, 0, len(nums_quick) - 1), repeat=False, interval=PAUSE, blit=True, cache_frame_data=False)
-ani_merge = FuncAnimation(fig, update_insertion, frames=insertion(bars_insertion, nums_insertion), repeat=False, interval=PAUSE, blit=True, cache_frame_data=False)
-
+ani_merge = FuncAnimation(fig, update_merge, frames=merge(bars_merge, nums_merge, 0, len(nums_merge) - 1), repeat=False, interval=PAUSE, blit=True, cache_frame_data=False)
 
 fig.suptitle('Sorting Algorithms Visualizer', fontsize=16)
-
 plt.show()
-
-
-
-# Merge sort
-# Bubbles items up to where they need to be in list, stable, in-place
-# Time complexity : best O(n), avg O(n^2), worst O(n^2)
-# Space complexity : O(1)
-
-# Heap sort
-# Bubbles items up to where they need to be in list, stable, in-place
-# Time complexity : best O(n), avg O(n^2), worst O(n^2)
-# Space complexity : O(1)
