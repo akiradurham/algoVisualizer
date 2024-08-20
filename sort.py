@@ -9,18 +9,19 @@ AMOUNT = 30 # how many nums are generated
 PAUSE = 100 # how long matplotlib waits before moving again
 
 nums_bubble = np.arange(1, AMOUNT + 1)
-nums_selection = np.arange(1, AMOUNT + 1)
-nums_quick = np.arange(1, AMOUNT + 1)
 nums_insertion = np.arange(1, AMOUNT + 1)
-nums_merge = np.arange(1, AMOUNT + 1)
+nums_selection = np.arange(1, AMOUNT + 1)
 nums_heap = np.arange(1, AMOUNT + 1)
+nums_quick = np.arange(1, AMOUNT + 1)
+nums_merge = np.arange(1, AMOUNT + 1)
 
 np.random.shuffle(nums_bubble)
+np.random.shuffle(nums_insertion)
 np.random.shuffle(nums_selection)
 np.random.shuffle(nums_quick)
-np.random.shuffle(nums_insertion)
-np.random.shuffle(nums_merge)
 np.random.shuffle(nums_heap)
+np.random.shuffle(nums_merge)
+
 
 # Bubble sort
 # Bubbles items up to where they need to be in list, stable, in-place
@@ -76,7 +77,7 @@ def insertion(bars, nums):
 # Builds a max heap, remove largest element (root), and build new list, repeat until done - in-place, not stable
 # Time complexity : best O(nlogn), avg O(nlogn), worst O(nlogn)
 # Space complexity : O(1)
-def heapify(nums, n, i):
+def heapify(bars, nums, n, i):
     largest = i
     left = 2 * i + 1
     right = 2 * i + 2
@@ -86,21 +87,30 @@ def heapify(nums, n, i):
 
     if right < n and nums[right] > nums[largest]:
         largest = right
+        
+    for bar, height in zip(bars, nums):
+        bar.set_height(height)
+        bar.set_color('blue')
+    bars[i].set_color('red')
+    if left < n:
+        bars[left].set_color('orange')
+    if right < n:
+        bars[right].set_color('yellow')
 
     if largest != i:
         nums[i], nums[largest] = nums[largest], nums[i]
-        heapify(nums, n, largest)
+        heapify(bars, nums, n, largest)
 
 def heap(bars, nums):
     nums = np.copy(nums)
     n = len(nums)
 
     for i in range(n // 2 - 1, -1, -1):
-        heapify(nums, n, i)
+        heapify(bars, nums, n, i)
 
     for i in range(n - 1, 0, -1):
         nums[i], nums[0] = nums[0], nums[i]
-        heapify(nums, i, 0)
+        heapify(bars, nums, i, 0)
         yield np.copy(nums)
         
 # (Hoare's) Quick sort
