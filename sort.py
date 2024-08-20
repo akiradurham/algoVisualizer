@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 
-AMOUNT = 30 # how many nums are generated
+AMOUNT = 100 # how many nums are generated
 PAUSE = 100 # how long matplotlib waits before moving again
 
 nums_bubble = np.arange(1, AMOUNT + 1)
@@ -222,36 +222,24 @@ def update_merge(frame):
     return bars_merge
 
 # setting up the graphs and titles
-fig, ax = plt.subplots(2, 3, figsize=(12, 8))
+fig, ax = plt.subplots(2, 3, figsize=(12, 10))
 
 ax[0,0].set_title('Bubble Sort')
-ax[0,0].set_xlabel('Index')
-ax[0,0].set_ylabel('Value')
 bars_bubble = ax[0, 0].bar(np.arange(AMOUNT), nums_bubble, color='blue', width = 0.6)
 
 ax[0,1].set_title('Selection Sort')
-ax[0,1].set_xlabel('Index')
-ax[0,1].set_ylabel('Value')
 bars_selection = ax[0, 1].bar(np.arange(AMOUNT), nums_selection, color='blue', width = 0.6)
 
 ax[0,2].set_title('Insertion Sort')
-ax[0,2].set_xlabel('Index')
-ax[0,2].set_ylabel('Value')
 bars_insertion = ax[0, 2].bar(np.arange(AMOUNT), nums_insertion, color='blue', width = 0.6)
 
 ax[1, 0].set_title('Heap Sort')
-ax[1, 0].set_xlabel('Index')
-ax[1, 0].set_ylabel('Value')
 bars_heap = ax[1, 0].bar(np.arange(AMOUNT), nums_heap, color='blue', width=0.6)
 
 ax[1, 1].set_title('Quick Sort')
-ax[1, 1].set_xlabel('Index')
-ax[1, 1].set_ylabel('Value')
 bars_quick = ax[1, 1].bar(np.arange(AMOUNT), nums_quick, color='blue', width=0.6)
 
 ax[1, 2].set_title('Merge Sort')
-ax[1, 2].set_xlabel('Index')
-ax[1, 2].set_ylabel('Value')
 bars_merge = ax[1, 2].bar(np.arange(AMOUNT), nums_merge, color='blue', width=0.6)
 
 # calculating the amount of frames each animation needs
